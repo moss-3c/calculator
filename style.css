@@ -1,0 +1,32 @@
+/* Using Direct Child Selector (>)
+This method applies styles only to the direct children of a parent element. */
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.border {
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+    gap: 5px;
+    
+}
+
+.display {
+    flex: 1;
+    text-align: end;
+}
+
+
+
+/* margin things */
+body, .border, .display, .buttons {
+    border: 2px solid black  ;
+}
+.buttons {
+    padding: 5px;
+}
