@@ -21,6 +21,7 @@ body {
     text-align: end;
     font-size: 20px;
     padding: 3px;
+    min-height: 30px;
 }
 
 button {
