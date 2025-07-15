@@ -39,6 +39,7 @@ function operate(operator, num1, num2) {
             result = divide(num1, num2);
             break;     
     } 
+    equation.justCalculated = true;
     
     return result;
 }
@@ -49,19 +50,24 @@ function updateDisplay (content) {
     return content;
 }
 
-function isOperator(string) {
+function isOperator(char) {
     const operators = "+-/*";
-    return operators.includes(string);
+    return operators.includes(char);
 }
 
-function isDigit(string) {
+function isDigit(char) {
     const digits = ".0123456789";
-    return digits.includes(string);
+    return digits.includes(char);
 }
+
+
 
 function backspace(string) {
-    return string.toString().substring(0, string.length - 1);
+    const newString = string.toString().substring(0, string.length - 1);
+    updateDisplay(newString);
+    return newString;
 }
+
 
 //--------------------------------//
 
@@ -73,14 +79,16 @@ let equation = {
     isComplete: function () {
         return this.num1 && this.num2 && this.operator;
     },
-    softReset: function () {
+    displayResult: function () {
         this.num2 = '';
         this.operator = '';
+        updateDisplay(parseFloat(+(this.num1).toFixed(2)));
     },
     hardReset: function () {
         this.num1 = '';
         this.num2 = '';
         this.operator = '';
+        updateDisplay('');
     },
     hasOperator: function () { 
         return !!this.operator;
@@ -91,15 +99,22 @@ let equation = {
             this.justCalculated = false;
         }
         this.num1 += digit;
-
-        return this.num1;
-    }
-
+        updateDisplay(this.num1);
+    },
+    updateNum2: function (digit) {
+        this.num2 += digit;
+        updateDisplay(this.num2);
+    },
+    updateCurrNum: function (input) {
+        if (this.hasOperator()) {
+            equation.updateNum2(input);
+        }
+        else {
+            equation.updateNum1(input);
+        }
+    },
 } ;
 
-
-
-let display;
 
 const table = document.querySelector('table');
 table.addEventListener('click', (event) => {
@@ -108,39 +123,32 @@ table.addEventListener('click', (event) => {
         
         if (input === "AC") {
             equation.hardReset();
-            updateDisplay('');
         }
         else if (input === "Del") {
             if (equation.isComplete()) {
                 equation.num2 = backspace(equation.num2);
-                updateDisplay(equation.num2);
             }
             else {
                 equation.num1 = backspace(equation.num1);
-                updateDisplay(equation.num1);
             }
         }
         else if(input === '=' || isOperator(input)) {
             if (equation.isComplete()) {
                 equation.num1 = operate(equation.operator, equation.num1, equation.num2);
-                equation.justCalculated = true;
-                equation.softReset();
-                updateDisplay(parseFloat(+equation.num1.toFixed(2)));
+                equation.displayResult();
             }
             else if (isOperator(input)) {
                 equation.operator = input;
-                updateDisplay('');
+            }
+        }
+        else if (input === '.') {
+            const display = document.querySelector(".display");
+            if(!display.textContent.includes(".")) {
+                equation.updateCurrNum(input);
             }
         }
         else if (isDigit(input)) {
-            if (equation.hasOperator()) {
-                equation.num2 += input;
-                updateDisplay(equation.num2);
-            }
-            else {
-                equation.updateNum1(input);
-                updateDisplay(equation.num1);
-            }
+             equation.updateCurrNum(input);
         }
         
         
