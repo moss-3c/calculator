@@ -69,6 +69,7 @@ let equation = {
     num1: '',
     num2: '',
     operator: '',
+    justCalculated: false,
     isComplete: function () {
         return this.num1 && this.num2 && this.operator;
     },
@@ -84,6 +85,15 @@ let equation = {
     hasOperator: function () { 
         return !!this.operator;
     },
+    updateNum1: function (digit) {
+        if (this.justCalculated) {
+            this.hardReset();
+            this.justCalculated = false;
+        }
+        this.num1 += digit;
+
+        return this.num1;
+    }
 
 } ;
 
@@ -113,6 +123,7 @@ table.addEventListener('click', (event) => {
         else if(input === '=' || isOperator(input)) {
             if (equation.isComplete()) {
                 equation.num1 = operate(equation.operator, equation.num1, equation.num2);
+                equation.justCalculated = true;
                 equation.softReset();
                 updateDisplay(parseFloat(+equation.num1.toFixed(2)));
             }
@@ -127,7 +138,7 @@ table.addEventListener('click', (event) => {
                 updateDisplay(equation.num2);
             }
             else {
-                equation.num1 += input;
+                equation.updateNum1(input);
                 updateDisplay(equation.num1);
             }
         }
@@ -135,6 +146,8 @@ table.addEventListener('click', (event) => {
         
     }
 )
+
+/*When a result is displayed, pressing a new digit should clear the result and start a new calculation instead of appending the digit to the existing result. Check whether this is the case on your calculator!*/
  
 
   
