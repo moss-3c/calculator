@@ -20,8 +20,13 @@ body {
     flex: 1;
     text-align: end;
     font-size: 20px;
-    padding: 3px;
+    padding: 7px;
     min-height: 30px;
+}
+
+.button-container {
+    justify-content: center;
+    padding: 7px;
 }
 
 button {
@@ -31,6 +36,10 @@ button {
     font-size: 20px;
 }
 
+table {
+    align-content: center;
+}
+
 tr {
     text-align: center;
 }
@@ -38,7 +47,7 @@ tr {
 
 
 /* margin things */
-body, .border, .display, .buttons {
+body, .border, .display, .button-container {
     border: 2px solid black  ;
 }
 .buttons {

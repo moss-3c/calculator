@@ -50,17 +50,15 @@ function updateDisplay (content) {
     return content;
 }
 
-function isOperator(char) {
+function isOperator(string) {
     const operators = "+-/*";
-    return operators.includes(char);
+    return operators.includes(string);
 }
 
 function isDigit(char) {
     const digits = ".0123456789";
     return digits.includes(char);
 }
-
-
 
 function backspace(string) {
     const newString = string.toString().substring(0, string.length - 1);
@@ -69,8 +67,41 @@ function backspace(string) {
 }
 
 
-//--------------------------------//
-
+function handleInput(input) {
+    
+    if (input === "AC" || input === "c") {
+        equation.hardReset();
+    }
+    else if (input === "Del" || input === "Backspace") {
+        if (equation.isComplete()) {
+            equation.num2 = backspace(equation.num2);
+        }
+        else {
+            equation.num1 = backspace(equation.num1);
+        }
+    }
+    else if(input === '=' || input === "Enter" || isOperator(input)) {
+        if (equation.isComplete()) {
+            equation.num1 = operate(equation.operator, equation.num1, equation.num2);
+            equation.displayResult();
+        }
+        else if (isOperator(input)) {
+            equation.operator = input;
+        }
+    }
+    else if (input === '.') {
+        const display = document.querySelector(".display");
+        if(!display.textContent.includes(".")) {
+            equation.updateCurrNum(input);
+        }
+    }
+    else if (isDigit(input)) {
+         equation.updateCurrNum(input);
+    }
+    
+    
+}
+//------
 let equation = {
     num1: '',
     num2: '',
@@ -82,7 +113,7 @@ let equation = {
     displayResult: function () {
         this.num2 = '';
         this.operator = '';
-        updateDisplay(parseFloat(+(this.num1).toFixed(2)));
+        updateDisplay(parseFloat((+this.num1).toFixed(2)));
     },
     hardReset: function () {
         this.num1 = '';
@@ -117,45 +148,12 @@ let equation = {
 
 
 const table = document.querySelector('table');
-table.addEventListener('click', (event) => {
-        let input = event.target.textContent;
-        console.log(input);
-        
-        if (input === "AC") {
-            equation.hardReset();
-        }
-        else if (input === "Del") {
-            if (equation.isComplete()) {
-                equation.num2 = backspace(equation.num2);
-            }
-            else {
-                equation.num1 = backspace(equation.num1);
-            }
-        }
-        else if(input === '=' || isOperator(input)) {
-            if (equation.isComplete()) {
-                equation.num1 = operate(equation.operator, equation.num1, equation.num2);
-                equation.displayResult();
-            }
-            else if (isOperator(input)) {
-                equation.operator = input;
-            }
-        }
-        else if (input === '.') {
-            const display = document.querySelector(".display");
-            if(!display.textContent.includes(".")) {
-                equation.updateCurrNum(input);
-            }
-        }
-        else if (isDigit(input)) {
-             equation.updateCurrNum(input);
-        }
-        
-        
-    }
-)
+table.addEventListener('click', (event) => handleInput(event.target.textContent));
+let body = document.querySelector('body');
+body.addEventListener('keydown', (event) => handleInput(event.key));
 
-/*When a result is displayed, pressing a new digit should clear the result and start a new calculation instead of appending the digit to the existing result. Check whether this is the case on your calculator!*/
+
+//add kb support
  
 
   
