@@ -25,6 +25,7 @@ body {
 }
 
 .button-container {
+    display: flex;
     justify-content: center;
     padding: 7px;
 }
